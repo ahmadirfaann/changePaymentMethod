@@ -1,0 +1,18 @@
+.custom-button {
+    position: absolute;
+    // top: 43em;
+   transform: translateX(-50%) translateY(-50%);
+}
+
+.custom-leo-radio {
+    .leo-radio .leo-radio__input {
+        margin-bottom: 1.125rem !important;
+    }
+}
+
+.custom_divider_3{
+    &.leo-divider.leo-divider--color-grey-300:before{
+        background: #e0e0e0;
+        width: 100% !important;
+    }
+}

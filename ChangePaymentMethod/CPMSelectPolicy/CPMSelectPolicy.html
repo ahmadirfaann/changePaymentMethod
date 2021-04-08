@@ -1,0 +1,152 @@
+<div>
+    <span class="leo-inline-block leo-text-lg leo-font-semibold leo-text-primary leo-p-xs">
+        {{$t('fo.cpm.selectpolicy.title')}}
+    </span>
+    <div class="leo-mb-md leo-mt-xs">
+        <!-- for eligiblePolicy -->
+        <leo-card
+            class="leo-mb-md"
+            v-for="eligiblePolicy in eligiblePolicies"
+            v-bind:key="eligiblePolicy.policyNo"
+        >
+            <section class="leo-my-2xs" v-on:click="navigateToDetails(eligiblePolicy)">
+                <div class="leo-flex leo-items-start leo-pb-xs">
+                    <div class="leo-w-full">
+                        <div class="leo-text-accent leo-text-xs">
+                            <span class="leo-text-xs leo-text-accent">{{eligiblePolicy.policyNo}}</span>
+                            <leo-divider vertical class="leo-h-xs leo-mx-xs" color="secondary" />
+                            <span class="leo-text-xs leo-text-accent">{{eligiblePolicy.policyStartDate | dateFormat}}</span>
+                        </div>
+                        <div
+                            class="leo-text-lg leo-font-semibold code-flag leo-mt-2xs"
+                        >{{eligiblePolicy.policyMainPlanName ? eligiblePolicy.policyMainPlanName : eligiblePolicy.policyMainPlanCd}}</div>
+                        <div class="leo-text-sm leo-mt-2xs">
+                            <leo-icon
+                                class="leo-mr-xs"
+                                type="life-assured"
+                                width="14"
+                                height="14"
+                                color="primary"
+                            />
+                            <span>{{eligiblePolicy.lifeAssureds ? eligiblePolicy.lifeAssureds.join(', ') : ''}}</span>
+                        </div>
+                    </div>
+                    <leo-icon type="arrow-right" height="24" width="24" />
+                </div>
+                <leo-divider />
+                <div
+                    class="leo-flex leo-mt-md"
+                >
+                    <div class="leo-w-full leo-text-left leo-text-sm">{{$t('fo.cpm.selectpolicy.method')}}</div>
+                    <div class="leo-w-full leo-text-left leo-text-sm">{{$t('fo.cpm.selectpolicy.premium')}}</div>
+                </div>
+                <div
+                    class="leo-flex"
+                >
+                    <div class="leo-w-full leo-text-left leo-font-semibold code-flag leo-text-xl">
+                        {{ capitalFirstLetter(eligiblePolicy.currentPaymentMethods ? joinAccount(eligiblePolicy.currentPaymentMethods)  : '') }}
+                    </div>
+                    <div class="leo-w-full leo-text-left leo-font-semibold code-flag leo-text-xl">
+                        {{ eligiblePolicy.policyNextDueAmount||'0.00' | thousandSeparators }}
+                        <div class="leo-text-xs leo-inline-block leo-font-normal"> 
+                            SGD {{ eligiblePolicy.paymentFrequencyDesc }} 
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </leo-card>
+        <!-- for nonEligiblePolicy -->
+        <div class="leo-mt-lg" v-if="nonEligiblePolicies.length > 0">
+            <div>
+                <span class="leo-inline-block leo-text-lg leo-font-semibold leo-text-primary leo-p-xs">
+                    {{$t('fo.cpm.selectpolicy.unavailable')}}
+                </span>
+            </div>
+            <div>
+                <span class="leo-inline-block leo-text-xs leo-text-accent leo-p-xs">
+                    {{$t('fo.cpm.selectpolicy.contact1')}}
+                    <span class="leo-text-xs leo-text-primary leo-underline"
+                    @click="isDialogOpen = true">{{$t('fo.cpm.selectpolicy.contact2')}}</span>
+                    {{$t('fo.cpm.selectpolicy.contact3')}}
+                </span>
+            </div>
+        </div>
+        <leo-card
+            class="leo-mb-md"
+            v-for="nonEligiblePolicy in nonEligiblePolicies"
+            v-bind:key="nonEligiblePolicy.policyNo"
+        >
+            <section class="leo-my-2xs">
+                <div class="leo-flex leo-items-start leo-pb-xs">
+                    <div class="leo-w-full leo-mx-xs">
+                        <div class="leo-text-accent leo-text-xs">
+                            <span class="leo-text-xs leo-text-grey-350">{{nonEligiblePolicy.policyNo}}</span>
+                            <leo-divider vertical class="leo-h-xs leo-mx-xs" />
+                            <span class="leo-text-xs leo-text-grey-350">{{nonEligiblePolicy.policyStartDate | dateFormat}}</span>
+                        </div>
+                        <div
+                            class="leo-text-lg leo-font-semibold code-flag leo-mt-2xs leo-text-grey-350"
+                        >{{nonEligiblePolicy.policyMainPlanName ? nonEligiblePolicy.policyMainPlanName : nonEligiblePolicy.policyMainPlanCd}}</div>
+                        <div class="leo-text-sm leo-mt-2xs">
+                            <leo-icon
+                                class="leo-mr-xs"
+                                type="life-assured"
+                                width="14"
+                                height="14"
+                                color="grey-350"
+                            />
+                            <span class="leo-text-grey-350 leo-text-xs">{{nonEligiblePolicy.lifeAssureds ? nonEligiblePolicy.lifeAssureds.join(', ') : ''}}</span>
+                        </div>
+                    </div>
+                    <leo-icon type="arrow-right" height="24" width="24" color="grey-350" />
+                </div>
+                <leo-divider />
+                <div
+                    class="leo-flex leo-mt-md"
+                >
+                    <div class="leo-w-full leo-text-left leo-text-sm leo-text-grey-350">{{$t('fo.cpm.selectpolicy.method')}}</div>
+                    <div class="leo-w-full leo-text-left leo-text-sm leo-text-grey-350">{{$t('fo.cpm.selectpolicy.premium')}}</div>
+                </div>
+                <div
+                    class="leo-flex"
+                >
+                    <div class="leo-w-full leo-text-left leo-font-semibold code-flag leo-text-xl leo-text-grey-350">
+                        {{ capitalFirstLetter(nonEligiblePolicy.currentPaymentMethods ? joinAccount(nonEligiblePolicy.currentPaymentMethods)  : '') }}                    </div>
+                    <div class="leo-w-full leo-text-left leo-font-semibold code-flag leo-text-xl leo-text-grey-350">
+                        {{ nonEligiblePolicy.policyNextDueAmount||'0.00' | thousandSeparators }} 
+                        <span class="leo-text-xs leo-inline-block leo-font-normal leo-text-grey-350"> 
+                            SGD {{ nonEligiblePolicy.paymentFrequencyDesc }} 
+                        </span>
+                    </div>
+                </div>
+            </section>
+        </leo-card>
+    </div>
+    <leo-dialog :show="isDialogOpen" containerClass="leo-p-3xl" persistence @dismissed="isDialogOpen = false">
+        <div @click="isDialogOpen = false" class="leo-text-right leo--mt-xs leo--mr-xs">
+            <leo-icon class="leo-cursor-pointer" type="close" />
+        </div>
+        <div class="leo-text-lg leo-font-semibold leo-mb-md">Customer service</div>
+        <div>
+            <span @click="pressToCall">
+                <leo-icon
+                    class="leo-cursor-pointer leo-mr-xs"
+                    color="primary"
+                    type="call"
+                    height="16"
+                    width="16"
+                />Call
+            </span>
+            <leo-divider class="leo-h-sm leo-mx-md" vertical />
+            <span @click="pressToEmail">
+                <leo-icon
+                    class="leo-cursor-pointer leo-mr-xs"
+                    color="primary"
+                    type="mail"
+                    height="16"
+                    width="16"
+                />Email
+            </span>
+        </div>
+    </leo-dialog>
+</div>

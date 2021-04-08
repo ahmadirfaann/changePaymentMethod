@@ -1,0 +1,348 @@
+<div class="leo-flex leo-flex-col leo-flex-grow">
+    <div class="leo-flex">
+        <div class="leo-w-full leo-text-accent leo-pl-sm leo-pr-sm leo-text-sm">
+            {{$t('fo.cpm.confirm.title')}}
+        </div>
+    </div>
+    <div class="leo-mt-md">
+        <leo-card
+            class="leo-mb-xl"
+            v-if="morePoliciesSelected.length > 0"
+        >
+            <section>
+                <div class="leo-flex leo-items-start">
+                    <div class="leo-w-full leo-mx-xs">
+                        <div class="leo-flex leo-text-accent leo-text-xs leo-mt-2xs">
+                            <div class="leo-text-lg leo-font-semibold code-flag leo-xs">{{('Policies')}}</div>
+                        </div>
+                    </div>
+                    <!-- <leo-icon type="edit" color="primary" /> -->
+                    <leo-button fab @click="onClickEditPolicy" class="leo-button-icon leo-pb-md leo-mt-2xs">
+                        <leo-icon type="edit" color="primary" height="24" width="24" />
+                    </leo-button>
+                </div>
+                <div class="leo-flex">
+                    <div class="leo-w-full leo-mx-xs">
+                        <div class="leo-flex leo-flex-wrap">
+                            <div class="leo-w-full">{{ selectedPolicy.policyMainPlanName }}</div>
+                            <div class="leo-text-accent leo-text-md code-flag">
+                                {{ selectedPolicy.policyNo }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="leo-flex">
+                    <div class="leo-w-full leo-mx-xs">
+                        <div v-if="morePoliciesSelected.length > 0">
+                            <div v-for="(selectedMorePolicy, index) in morePoliciesSelected" v-bind:key="index" class="leo-flex leo-flex-wrap leo-mt-sm">
+                                <div class="leo-w-full">{{ selectedMorePolicy.policyMainPlanName }}</div>
+                                <div class="leo-text-accent leo-text-md code-flag">
+                                    {{ selectedMorePolicy.policyNo }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- <div class="leo-flex leo-items-start leo-pb-xs">
+                    <div class="leo-w-full leo-mx-xs">
+                        <div class="leo-flex leo-text-accent leo-text-xs">
+                            <div class="leo-text-lg leo-font-semibold code-flag leo-xs">{{('Policies')}}</div>
+                        </div>
+                        <div class="leo-flex leo-mt-sm">
+                        <div class="leo-w-full">{{ selectedPolicy.policyMainPlanName }}</div>
+							<div class="leo-w-full leo-text-right leo-font-semibold code-flag">
+								{{ selectedPolicy.policyNo }}
+							</div>
+                        </div>
+                        <div v-if="morePoliciesSelected.length > 0">
+                            <div v-for="(selectedMorePolicy, index) in morePoliciesSelected" v-bind:key="index" class="leo-flex leo-mt-sm">
+                                <div class="leo-w-full">{{ selectedMorePolicy.policyMainPlanName }}</div>
+                                    <div class="leo-w-full leo-text-right leo-font-semibold code-flag">
+                                        {{ selectedMorePolicy.policyNo }}
+                                    </div>
+                                </div>
+                            </div>
+                    </div>
+                    <leo-button fab @click="onClickEditPolicy" class="leo-button-icon leo-pb-md leo-mt-sm">
+                        <leo-icon type="edit" color="primary" height="24" width="24" />
+                    </leo-button>
+                </div> -->
+            </section>
+        </leo-card>
+        <div class="leo-flex leo-text-lg leo-font-semibold code-flag custom-padding">
+            {{$t('fo.cpm.confirm.paymethod')}}
+        </div>
+    </div>
+        <div v-if="isEldershield">
+            <leo-card
+            class="leo-mb-md"
+            v-if="selectedMethodData.payRemaining"
+            >
+                <section>
+                    <div class="leo-flex leo-items-start">
+                        <div class="leo-w-full leo-mx-xs">
+                            <div class="leo-flex leo-text-accent leo-text-xs leo-mt-2xs">
+                                <div class="leo-text-lg leo-font-semibold code-flag leo-xs">CPF account</div>
+                            </div>
+                        </div>
+                        <!-- <leo-icon type="edit" color="primary" /> -->
+                        <leo-button fab @click="onClickEdit" class="leo-button-icon leo-pb-md leo-mt-2xs">
+                            <leo-icon type="edit" color="primary" height="24" width="24" />
+                        </leo-button>
+                    </div>
+                    <div class="leo-flex">
+                        <div class="leo-w-full leo-mx-xs">
+                            <div class="leo-flex">
+                            <div class="leo-w-full">{{('CPF account holder')}}</div>
+                                <div class="leo-w-full leo-text-right leo-font-semibold code-flag">
+                                <!-- {{ policyHolderData.fullName }} -->
+                                {{custName}}
+                                </div>
+                            </div>
+                            <div class="leo-flex leo-mt-xs">
+                                <div class="leo-w-full">Amount</div>
+                                <div class="leo-w-full leo-text-right leo-font-semibold code-flag">
+                                    {{ selectedPolicy.CPFWithdrawalLimit || '0.00' | thousandSeparators }} SGD
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="leo-flex leo-mb-sm">
+                        <div class="leo-w-full leo-mx-xs">
+                            <div class="leo-flex leo-text-accent leo-text-xs leo-mt-xl leo-mb-md">
+                                <div class="leo-text-lg leo-font-semibold code-flag leo-xs">{{ selectedMethodData.paymentMethod === 'Credit Card' ? 'VISA or Mastercard' : selectedMethodData.paymentMethod }}</div>
+                            </div>
+                            <div v-if="selectedMethodData.paymentMethod === 'Credit Card' || selectedMethodData.paymentMethod === ' OCBC Credit Card' || selectedMethodData.paymentMethod === 'OCBC GE Cashflo Card'">
+                                <div class="leo-flex">
+                                    <div class="leo-w-full">{{$t('fo.cpm.confirm.cardHolderName')}}</div>
+                                        <div class="leo-w-full leo-text-right leo-font-semibold code-flag">
+                                            {{ selectedMethodData.cardHolderName }}
+                                        </div>
+                                </div>
+                                <div class="leo-flex leo-mt-xs">
+                                    <div class="leo-w-full">{{$t('fo.cpm.confirm.cardNumber')}}</div>
+                                    <div class="leo-w-full leo-text-right leo-font-semibold code-flag">
+                                        {{ selectedMethodData.cardNumber }}
+                                    </div>
+                                </div>
+                                <div class="leo-flex leo-mt-xs">
+                                    <div class="leo-w-full">{{$t('fo.cpm.confirm.expiryDate')}}</div>
+                                    <div class="leo-w-full leo-text-right leo-font-semibold code-flag">
+                                        {{ selectedMethodData.expiryDate }}
+                                    </div>
+                                </div>
+                                <div class="leo-flex leo-mt-xs">
+                                    <div class="leo-w-full">Amount</div>
+                                    <div class="leo-w-full leo-text-right leo-font-semibold code-flag">
+                                        {{ selectedMethodData.amount || '0.00' | thousandSeparators }} SGD
+                                    </div>
+                                </div>
+                            </div>
+                            <div v-else>
+                                <div class="leo-flex leo-mt-xs">
+                                    <div class="leo-w-full">Amount</div>
+                                    <div class="leo-w-full leo-text-right leo-font-semibold code-flag">
+                                        {{ selectedMethodData.amount || '0.00' | thousandSeparators }} SGD
+                                    </div>
+                                </div>
+                                <div>
+                                    <leo-text-note class="leo-mt-md">
+                                        Payment instructions will be sent to {{ custEmail }}.
+                                    </leo-text-note>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </leo-card>
+            <leo-card
+            class="leo-mb-md"
+            v-else-if="selectedMethodData.payFull || isCPFWithdrawalIsMore"
+            >
+                <section>
+                    <div class="leo-flex leo-items-start">
+                        <div class="leo-w-full leo-mx-xs">
+                            <div class="leo-flex leo-text-accent leo-text-xs leo-mt-2xs">
+                                <div class="leo-text-lg leo-font-semibold code-flag leo-xs">{{ selectedMethodData.paymentMethod === 'Personal CPF' ? 'CPF account' : selectedMethodData.paymentMethod === 'Credit Card' ? 'VISA or Mastercard' : selectedMethodData.paymentMethod }}</div>
+                            </div>
+                        </div>
+                        <!-- <leo-icon type="edit" color="primary" /> -->
+                        <leo-button fab @click="onClickEdit" class="leo-button-icon leo-pb-md leo-mt-2xs">
+                            <leo-icon type="edit" color="primary" height="24" width="24" />
+                        </leo-button>
+                    </div>
+                    <div class="leo-flex leo-mb-sm">
+                        <div class="leo-w-full leo-mx-xs">
+                            <div v-if="selectedMethodData.paymentMethod === 'Personal CPF'"> 
+                                <div class="leo-flex">
+                                    <div class="leo-w-full">CPF account number</div>
+                                    <div class="leo-w-full leo-text-right leo-font-semibold code-flag">
+                                       <!-- {{ selectedMethodData.accountNo }} -->
+                                       {{ idNumber }}
+                                    </div>
+                                </div>
+                                <div class="leo-flex leo-mt-xs">
+                                    <div class="leo-w-full">Amount</div>
+                                    <div class="leo-w-full leo-text-right leo-font-semibold code-flag">
+                                        {{ selectedMethodData.amount || '0.00' | thousandSeparators }} SGD
+                                    </div>
+                                </div>
+                            </div>
+                            <div v-if="selectedMethodData.paymentMethod === 'Credit Card' || selectedMethodData.paymentMethod === ' OCBC Credit Card' || selectedMethodData.paymentMethod === 'OCBC GE Cashflo Card'">
+                                <div class="leo-flex">
+                                    <div class="leo-w-full">{{$t('fo.cpm.confirm.cardHolderName')}}</div>
+                                    <div class="leo-w-full leo-text-right leo-font-semibold code-flag">
+                                        {{ selectedMethodData.cardHolderName }}
+                                    </div>
+                                </div>
+                                <div class="leo-flex leo-mt-xs">
+                                    <div class="leo-w-full">{{$t('fo.cpm.confirm.cardNumber')}}</div>
+                                    <div class="leo-w-full leo-text-right leo-font-semibold code-flag">
+                                        {{ selectedMethodData.cardNumber }}
+                                    </div>
+                                </div>
+                                <div class="leo-flex leo-mt-xs">
+                                    <div class="leo-w-full">{{$t('fo.cpm.confirm.expiryDate')}}</div>
+                                    <div class="leo-w-full leo-text-right leo-font-semibold code-flag">
+                                        {{ selectedMethodData.expiryDate }}
+                                    </div>
+                                </div>
+                                <div class="leo-flex leo-mt-xs">
+                                    <div class="leo-w-full">Amount</div>
+                                    <div class="leo-w-full leo-text-right leo-font-semibold code-flag">
+                                        {{ selectedMethodData.amount || '0.00' | thousandSeparators }} SGD
+                                    </div>
+                                </div>
+                            </div>
+                            <div v-if="selectedMethodData.paymentMethod === 'Cash or cheque'">
+                                <div class="leo-flex leo-mt-xs">
+                                    <div class="leo-w-full">Amount</div>
+                                    <div class="leo-w-full leo-text-right leo-font-semibold code-flag">
+                                        {{ selectedMethodData.amount || '0.00' | thousandSeparators }} SGD
+                                    </div>
+                                </div>
+                                <div>
+                                    <leo-text-note class="leo-mt-md">
+                                        Payment instructions will be sent to {{ custEmail }}.
+                                    </leo-text-note>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </leo-card>
+        </div>
+        <leo-card
+            class="leo-mb-md"
+            v-else-if="!isEldershield"
+        >
+            <section>
+                <div class="leo-flex leo-items-start">
+                    <div class="leo-w-full leo-mx-xs">
+                        <div class="leo-flex leo-text-accent leo-text-xs leo-mt-2xs">
+                            <div v-if="selectedMethodData.paymentMethod == 'Cash or cheque'" class="leo-w-full leo-text-lg leo-font-semibold code-flag leo-xs">{{('Cash or cheque')}}</div>
+                            <div v-else class="leo-w-full leo-text-lg leo-font-semibold code-flag leo-xs">{{ selectedMethodData.paymentMethod === 'Personal CPF' ? 'CPF account' : selectedMethodData.paymentMethod === 'Credit Card' ? 'VISA or Mastercard' : selectedMethodData.paymentMethod }}</div>
+                        </div>
+                    </div>
+                    <!-- <leo-icon type="edit" color="primary" /> -->
+                    <leo-button fab @click="onClickEdit" class="leo-button-icon leo-pb-md leo-mt-2xs">
+                        <leo-icon type="edit" color="primary" height="24" width="24" />
+                    </leo-button>
+                </div>
+
+                <div class="leo-flex leo-mb-sm">
+                    <div class="leo-w-full leo-mx-xs">
+                        <div v-if="selectedMethodData.paymentMethod == 'Cash or cheque'" class="">
+                            <div class="leo-w-full">{{ $t('fo.cpm.confirm.cash') }}</div>
+                            <span>{{ custEmail + '.'}}</span>
+                        </div>
+                        <div v-else>
+                            <div class="leo-flex">
+                            <div class="leo-w-full">{{$t('fo.cpm.confirm.cardHolderName')}}</div>
+                                <div class="leo-w-full leo-text-right leo-font-semibold code-flag">
+                                    {{ selectedMethodData.cardHolderName }}
+                                </div>
+                            </div>
+                            <div class="leo-flex leo-mt-xs">
+                                <div class="leo-w-full">{{$t('fo.cpm.confirm.cardNumber')}}</div>
+                                <div class="leo-w-full leo-text-right leo-font-semibold code-flag">
+                                    {{ selectedMethodData.cardNumber }}
+                                </div>
+                            </div>
+                            <div class="leo-flex leo-mt-xs">
+                                <div class="leo-w-full">{{$t('fo.cpm.confirm.expiryDate')}}</div>
+                                <div class="leo-w-full leo-text-right leo-font-semibold code-flag">
+                                    {{ selectedMethodData.expiryDate }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            <!-- <div class="leo-flex leo-items-start leo-pb-xs">
+                <div class="leo-w-full leo-mx-xs">
+                    <div class="leo-flex leo-text-accent leo-text-xs">
+                        <div v-if="selectedMethodData.paymentMethod == 'Cash or cheque'" class="leo-w-full leo-text-lg leo-font-semibold code-flag leo-xs">{{('Cash or cheque')}}</div>
+                        <div v-else class="leo-w-full leo-text-lg leo-font-semibold code-flag leo-xs">{{ selectedMethodData.paymentMethod === 'Personal CPF' ? 'CPF account' : selectedMethodData.paymentMethod === 'Credit Card' ? 'Visa or Mastercard' : selectedMethodData.paymentMethod }}</div>
+                        <div class="leo-text-right">
+                            <leo-button fab @click="onClickEdit" class="leo-button-icon leo-pb-md">
+                                <leo-icon type="edit" color="primary" height="24" width="24" />
+                            </leo-button>
+                        </div>
+                    </div>
+                    <div v-if="selectedMethodData.paymentMethod == 'Cash or cheque'" class="leo-mt-sm">
+                        <div class="leo-w-full">{{ $t('fo.cpm.confirm.cash') }}</div>
+                        <span>{{ custEmail + '.'}}</span>
+                    </div>
+                    <div v-else>
+                        <div class="leo-flex leo-mt-sm">
+                        <div class="leo-w-full">{{$t('fo.cpm.confirm.cardHolderName')}}</div>
+							<div class="leo-w-full leo-text-right leo-font-semibold code-flag">
+								{{ selectedMethodData.cardHolderName }}
+							</div>
+                        </div>
+                        <div class="leo-flex leo-mt-sm">
+                            <div class="leo-w-full">{{$t('fo.cpm.confirm.cardNumber')}}</div>
+							<div class="leo-w-full leo-text-right leo-font-semibold code-flag">
+								{{ selectedMethodData.cardNumber }}
+							</div>
+                        </div>
+                        <div class="leo-flex leo-mt-sm">
+                            <div class="leo-w-full">{{$t('fo.cpm.confirm.expiryDate')}}</div>
+							<div class="leo-w-full leo-text-right leo-font-semibold code-flag">
+								{{ selectedMethodData.expiryDate }}
+							</div>
+                        </div>
+                    </div>
+            </div>
+            </div> -->
+            </section>
+        </leo-card>
+        <div class="leo-px-lg leo-pt-md">
+            <div class="leo-row">
+                <div class="leo-flex">
+                    <leo-checkbox class="" :items="[{ label: '', value: 'value-cb-1'}]"  :checked="flagCheckBox"  @change="onClickChecked()" @click="onClickChecked()"/>
+                </div>
+                <div class="leo-body-1 leo-col">
+                    {{ $t('fo.cpm.confirm.tnc.start') }}
+                    <!-- <a class="leo-text-primary"
+                        @click.stop="('TERM_AND_CONDITIONS')">*text*</a> -->
+                    <span
+                        tabIndex="0"
+                        class="leo-cursor-pointer leo-text-primary leo-underline"
+                        @click.stop="goToTermConditions"
+                        @keydown.enter="goToTermConditions"
+                        @keydown.space="goToTermConditions"
+                        aria-label="Click to show terms and conditions"
+                    >terms and conditions</span>
+                    {{ $t('fo.cpm.confirm.tnc.end') }}
+                </div>
+            </div>
+        </div>
+        <div class="leo-row leo-row--align-center leo-mb-xl leo-mt-3xl" :class="morePoliciesSelected.length > 2 ? '' : 'custom-btn'">
+            <leo-button primary cta text large v-on:click="onClickNext" v-if="checkbox === true">
+                {{ $t('fo.cpm.confirm.next') }}
+            </leo-button>
+        </div>
+</div>
+

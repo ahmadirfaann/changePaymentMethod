@@ -1,0 +1,100 @@
+    <div class="leo-pl-sm leo-pr-sm leo-flex leo-flex-col leo-flex-grow">
+        <div v-if="!isCPF && selectedPolicy.currentPaymentMethods.length == 1">
+            <div v-for="(current, index) in selectedPolicy.currentPaymentMethods" :key="index">
+            <div class="leo-flex leo-mt-md">
+                <div class="leo-w-full leo-text-accent leo-text-sm">Current method</div>
+                <div class="leo-w-full leo-text-right code-flag">
+                    {{current.paymentMethodDesc}}
+                </div>
+            </div>
+            <div v-if="current.accountNo !== 'undefined'" class="leo-flex">
+                <div
+                class="leo-w-full leo-text-right leo-text-accent leo-text-xs code-flag leo-mt-2xs">
+                <span class="leo-text-xs leo-text-accent" v-if="current.paymentMethodDesc === 'GIRO'">{{current.accountName}} </span>
+                    {{ccNo ? ccNo : current.accountNo}}
+                    <leo-icon v-if="isVisa" type="clr-visa" />
+                    <leo-icon v-else-if="isMaster" type="clr-master" />
+                </div>
+            </div>
+            </div>
+        </div>
+        <div v-if="isNoDetail">
+            <div class="leo-flex leo-mt-md">
+                <div class="leo-w-full leo-text-accent leo-text-sm">Current method</div>
+                <div class="leo-w-full leo-text-right code-flag">
+                    {{joinAccount(selectedPolicy.currentPaymentMethods)}} 
+                </div>
+            </div>
+        </div>
+    <div v-if="isCPF && selectedPolicy.currentPaymentMethods.length > 1 && !isNoDetail" class="leo-mt-md">
+        <div class="leo-w-full leo-text-accent leo-text-sm leo-mb-sm">Current method</div>
+        <div v-for="(current, index) in selectedPolicy.currentPaymentMethods" :key="index">
+            <div class="leo-flex leo-mt-xs" :class="index < selectedPolicy.currentPaymentMethods.length - 1 ? 'leo-mb-xs' : ''">
+                <div class="leo-w-full leo-text-md code-flag">{{current.paymentMethodDesc}}</div>
+                <div class="leo-w-full leo-text-right leo-font-semibold code-flag">
+                    <span class="leo-text-xs leo-text-accent" v-if="current.paymentMethodDesc === 'GIRO'">{{current.accountName}} </span>
+                    {{ccNo ? ccNo : current.accountNo}}
+                    <leo-icon v-if="isVisa" type="clr-visa" />
+                    <leo-icon v-else-if="isMaster" type="clr-master" />
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="leo-flex leo-mt-md leo-mb-sm">
+        <div class="leo-w-full leo-text-accent leo-text-sm">Total premium</div>
+        <div class="leo-w-full leo-text-right leo-font-semibold code-flag">{{selectedPolicy.policyNextDueAmount || '0.00' | thousandSeparators}} SGD</div>
+    </div>
+    <leo-divider class="custom_divider_3" />
+    <div v-if="chooseOptions">
+        <div v-for="item in items()" class="leo-mb-md leo-mt-md">
+            <leo-radio-custom
+                class="custom-leo-radio"
+                name="payPremium"
+                @change="onChange($event)"
+                :checked="payPremium"
+                :items="[item]"
+            />
+            <div class="leo-ml-xl">
+                <div v-if="item.value === 'pay excess' && payPremium === 'pay excess'">
+                    <div class="leo-mt-xs leo-flex">
+                        <div class="leo-text-accent leo-text-sm leo-mb-xs leo-col-4 leo-pl-0">CPF withdrawal limit</div>
+                        <div class="leo-w-full leo-text-right leo-text-sm code-flag">{{ selectedPolicy.CPFWithdrawalLimit || '0.00' | thousandSeparators }} SGD</div>
+                    </div>
+                    <div class="leo-flex">
+                        <div class="leo-text-accent leo-text-sm leo-mb-xs leo-col-8 leo-pl-0">Remaining premium to be paid</div>
+                        <div class="leo-w-full leo-text-right leo-text-sm code-flag">{{ remainingPremium || '0.00' | thousandSeparators }} SGD</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <template v-if="isChoosePayment">
+			<div class="leo-flex leo-flex-grow leo-justify-center leo-items-end leo-pb-3xl custom-button">
+				<leo-button large cta primary @click="onClickNextOption">Next</leo-button>
+			</div>
+		</template>
+    </div>
+    <!-- <div v-if="choosePayment">
+        <div class="leo-text-md leo-font-semibold leo-mt-xl">{{ selectedPolicy.CPFWithdrawalLimit || '0.00' | thousandSeparators }} SGD will be deducted for premium from your CPF account.</div>
+        <div class="leo-text-lg leo-text-primary leo-font-semibold leo-mt-xl">Select payment method</div>
+        <div class="leo-text-accent leo-text-sm leo-mb-xs leo-mt-xs">For the remaining balance of {{ remainingPremium || '0.00' | thousandSeparators }} SGD</div>
+        <div class="leo-mb-md leo-mt-md">
+            <leo-radio-custom  name="payment-frequency" :items="paymentMethodItems"  @change="onValueChange($event)" />
+        </div>
+        <template v-if="isValidToProceed">
+			<div class="leo-flex leo-flex-grow leo-justify-center leo-items-end leo-pb-3xl custom-button">
+				<leo-button large cta primary @click="onClickNext">Next</leo-button>
+			</div>
+		</template>
+    </div>
+    <div v-if="chooseOtherPayment">
+        <div class="leo-mb-md leo-mt-md">
+            <leo-radio-custom  name="payment-frequency" :items="paymentFullMethodItems"  @change="onValueChange($event)" />
+        </div>
+        <template v-if="isValidToProceed">
+			<div class="leo-flex leo-flex-grow leo-justify-center leo-items-end leo-pb-3xl custom-button">
+				<leo-button large cta primary @click="onClickNext">Next</leo-button>
+			</div>
+		</template>
+    </div> -->
+</div>
+

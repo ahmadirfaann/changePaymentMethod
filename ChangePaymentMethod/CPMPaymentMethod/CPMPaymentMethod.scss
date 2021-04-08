@@ -1,0 +1,22 @@
+// .leo-radio .leo-radio__input {
+   
+//     padding-top: 3px !important;
+// }
+
+// .leo-radio {
+  
+//     align-items: flex-start !important;
+
+// }
+.custom-button {
+    position: absolute;
+    // top: 43em;
+   transform: translateX(-50%) translateY(-50%);
+}
+
+.custom_divider_3{
+    &.leo-divider.leo-divider--color-grey-300:before{
+        background: #e0e0e0;
+        width: 100% !important;
+    }
+}

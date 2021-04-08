@@ -1,0 +1,150 @@
+<div class="leo-pl-sm leo-pr-sm leo-flex leo-flex-col leo-flex-grow leo-relative">
+  <div style="min-height: 77vh;">
+    <div v-if="selectedPolicy.isElderShield === 'N'">
+      <div v-for="(current, index) in selectedPolicy.currentPaymentMethods" :key="index" class="leo-mb-2xs">
+      <div class="leo-flex leo-mt-md">
+            <div class="leo-w-full leo-text-accent leo-text-sm">Current method</div>
+            <div class="leo-w-full leo-text-right code-flag">
+              {{current.paymentMethodDesc}}
+            </div>
+        </div>
+      <div v-if="current.accountNo !== 'undefined'" class="leo-flex">
+        <div
+          class="leo-w-full leo-text-right leo-text-accent leo-text-xs code-flag leo-mt-2xs"
+        >
+          <div class="leo-text-xs leo-text-accent"><span class="leo-text-xs leo-text-accent" v-if="current.paymentMethodDesc === 'GIRO'">{{current.accountName}} </span>
+            {{ccNo ? ccNo : current.accountNo}}
+            <leo-icon v-if="isVisa" type="clr-visa" />
+              <leo-icon v-else-if="isMaster" type="clr-master" />
+          </div>
+        </div>
+      </div>
+    </div>
+    </div>
+    <div v-if="selectedPolicy.isElderShield === 'Y'">
+      <div v-if="selectedPolicy.currentPaymentMethods.length == 1">
+        <div v-for="(current, index) in selectedPolicy.currentPaymentMethods" :key="index">
+        <div class="leo-flex leo-mt-md">
+            <div class="leo-w-full leo-text-accent">Current method</div>
+            <div class="leo-w-full leo-text-right code-flag">
+              {{joinAccount(selectedPolicy.currentPaymentMethods)}}
+            </div>
+        </div>
+        <div v-if="current.accountNo !== 'undefined'" class="leo-flex leo-mt-xs">
+            <div
+            class="leo-w-full leo-text-right leo-text-accent leo-text-xs code-flag leo-mt-2xs">
+            <span class="leo-text-xs leo-text-accent" v-if="current.paymentMethodDesc === 'GIRO'">{{current.accountName}} </span>
+              {{ccNo ? ccNo : current.accountNo}}
+              <leo-icon v-if="isVisa" type="clr-visa" />
+              <leo-icon v-else-if="isMaster" type="clr-master" />
+            </div>
+        </div>
+        </div>
+      </div>
+      <div v-if="isNoDetail">
+          <div class="leo-flex leo-mt-md">
+              <div class="leo-w-full leo-text-accent">Current method</div>
+              <div class="leo-w-full leo-text-right code-flag">
+                  {{joinAccount(selectedPolicy.currentPaymentMethods)}} 
+              </div>
+          </div>
+      </div>
+      <div v-if="isCPF && selectedPolicy.currentPaymentMethods.length > 1 && !isNoDetail" class="leo-mt-md">
+        <div class="leo-w-full leo-text-accent leo-mb-md">Current method</div>
+        <div v-for="(current, index) in selectedPolicy.currentPaymentMethods" :key="index">
+            <div class="leo-flex" :class="index < selectedPolicy.currentPaymentMethods.length - 1 ? 'leo-mb-sm' : ''">
+                <div class="leo-w-full leo-text-md leo-font-semibold code-flag leo-mt-2xs">{{current.paymentMethodDesc}}</div>
+                <div class="leo-w-full leo-text-right leo-font-semibold code-flag"><span class="leo-text-xs leo-text-accent" v-if="current.paymentMethodDesc === 'GIRO'">{{current.accountName}} </span>
+                  {{ccNo ? ccNo : current.accountNo}}
+                  <leo-icon v-if="isVisa" type="clr-visa" />
+                  <leo-icon v-else-if="isMaster" type="clr-master" />
+                </div>
+            </div>
+        </div>
+      </div>
+      <div class="leo-flex leo-mt-md leo-mb-2xs">
+        <div class="leo-w-full leo-text-accent">Total premium</div>
+        <div class="leo-w-full leo-text-right leo-font-semibold code-flag">{{selectedPolicy.policyNextDueAmount || '0.00' | thousandSeparators}} SGD</div>
+      </div>
+    </div>
+  
+    <leo-divider class="custom_divider_3" />
+  
+    <div class="leo-mb-md leo-mt-md leo-text-sm leo-text-accent">
+      Change will only take effect on the next premium due date.
+    </div>
+  <leo-card>
+    <div class="leo-mb-2xs leo-mt-xs leo-mx-xs">
+      <leo-form ref="form1" @validate="validated1 = $event">
+        <leo-input
+          class = "leo-mb-md capitalName"
+          label="Card holder name"
+          type="text"
+          @keyup="testing()"
+          v-model="cardHolderName"
+          @blur="handleBlur"
+          @focus="handleFocus"
+          @input="toValidateCC(1)"
+          :rules="[
+          () => cardHolderName.length > 0 || 'This field is required' 
+        ]">
+      </leo-input>
+    </leo-form>
+  
+    <leo-form ref="form2" @validate="validated2 = $event">
+        <leo-input
+          :class = "['leo-mb-md',{'cc-custom-error-icon': customErrorIconFlag}] "
+          label="Card number"
+          type="tel"
+          errorIcon
+          v-model="cardNumber"
+          appendInnerIconColor = ""
+          @blur="handleBlur"
+          @focus="handleFocus"
+          @input="toValidateCC(2)"
+          :appendInnerIconType = "changeIcon(cardNumber)"
+          mask="#### #### #### ####"
+          :rules="[
+            () => validateCardNumber()
+          ]"
+        >
+        </leo-input>
+      </leo-form>
+  
+      <leo-form ref="form3" @validate="validated3 = $event">
+        <leo-input
+          :class = "['leo-mb-sm','inputExpiryDate',{'cc-custom-error-icon-ExpiryDate': customErrorIconFlagExpDate}]"
+          label="Expiry date"
+          type="tel"
+          errorIcon
+          v-model="expiryDate"
+          placeholder="MM/YY"
+          @blur="handleBlur"
+          @focus="handleFocus"
+          @input="toValidateCC(3)"
+          mask="## / ##"
+          :error="statusExpiryDate"
+        >
+        <template v-slot:error>
+          {{msgExpiryDate}}
+        </template>
+      </leo-input>
+        </leo-form>
+    </div>
+  </leo-card>
+  </div>
+ 
+
+<!--  
+  <div
+    class="leo-flex leo-flex-col leo-flex-grow leo-justify-end leo-items-center"
+  >
+    <div class="leo-flex leo-flex-col leo-flex-grow leo-justify-end leo-mb-xl leo-mt-xl custom-button">
+      <leo-button cta primary large :disabled="!allowProceed" @click="onClickNext">Next</leo-button>
+    </div>
+  </div> -->
+  <div class="leo-flex leo-flex-grow leo-justify-center leo-items-end" style="padding-bottom: 3vh;"">
+    <leo-button cta primary large :disabled="!allowProceed" @click="onClickNext">Next</leo-button>
+ </div>
+</div>
+</div>

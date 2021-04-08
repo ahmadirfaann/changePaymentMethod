@@ -1,0 +1,73 @@
+.cc-custom-button {
+	position: absolute;
+	bottom: -89% !important;
+	transform: translate(-50%, -54%);
+    left: 50%;
+}
+
+.cc-custom-button-cpf {
+	position: absolute;
+	bottom: -199px;
+	transform: translate(-50%, -54%);
+    left: 50%;
+}
+
+.cc-custom-button-giro {
+	position: absolute;
+	bottom: -260px;
+	transform: translate(-50%, -54%);
+    left: 50%;
+}
+
+.cc-custom-error-icon{
+	&.leo-input.leo-input--error .leo-input__error-block .leo-icon{
+		margin-bottom: 15px !important
+	}
+	&.leo-input .leo-input__control .leo-input__append-inner-icon,
+	.leo-input .leo-input__control .leo-input__control__suffix {
+		font-size: 1.75rem !important;
+    // color: linear-gradient(to right, red , yellow); //gradient not working
+	}
+}
+// .customExpiryDate {
+// 	&.leo-input:nth-of-type(3) {
+// 		width: 40% !important;
+// 	}
+// }
+
+.capitalName{
+  &.leo-input .leo-input__input, .leo-input .leo-input__textarea{
+    text-transform: capitalize;
+  }
+} //to make capital letter each word
+.leo-input .leo-input__label {
+	color: #737373 !important;
+}
+
+.leo-input .leo-input__input, .leo-input .leo-input__textarea {
+	padding-top: 0px !important;
+	padding-bottom: 0px !important;
+}
+
+.leo-input .leo-input__control {
+	border-bottom: .0625rem solid #e0e0e0 !important;
+}
+
+.inputExpiryDate{
+	&.leo-input .leo-input__control{
+	 width: 40% !important;
+	}
+}
+
+.custom_divider_3{
+    &.leo-divider.leo-divider--color-grey-300:before{
+        background: #e0e0e0;
+        width: 100% !important;
+    }
+}
+
+.cc-custom-error-icon-ExpiryDate{
+	&.leo-input.leo-input--error .leo-input__error-block .leo-icon{
+		margin-bottom: 15px !important
+	}
+}

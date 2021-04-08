@@ -1,0 +1,11 @@
+.custom_divider_2{
+    &.leo-divider.leo-divider--color-grey-300[data-v-20fe34b5]:before {
+        background: #e0e0e0;
+        width: 96% !important;
+        margin-left: 7px;
+    }
+}
+
+.leo-divider.leo-divider--color-secondary:after {
+    background: #737373 !important;
+}

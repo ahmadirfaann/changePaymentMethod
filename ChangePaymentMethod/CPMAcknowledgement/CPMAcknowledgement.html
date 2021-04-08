@@ -1,0 +1,77 @@
+<div>
+    <div class="leo-pb-xs leo-text-center">
+        <leo-illustration
+        class="leo-mb-3xl leo-justify-center"
+        :type="status === 'success' ? 'transaction-completed' : 'transaction-cannot-proceed'"
+        width="300px"
+        height="200px"
+        />
+        <div class="leo-flex leo-flex-col leo-flex-grow leo-w-full leo-p-md">
+            <div class="leo-text-xl leo-font-semibold">
+                {{ status === 'success' ? $t('fo.cpm.ack.success') : $t('fo.cpfreq.ack.failed1') }}
+            </div>
+        </div>
+        <div class="leo-flex leo-flex-col leo-flex-grow leo-w-full leo-p-md">
+            <div class="leo-text-center" v-if="status === 'success'">
+                <div class="leo-text-xs leo-text-accent">{{$t('fo.cpm.ack.transacnum')}}</div>
+                <div v-show="!isMulTrxn" class="leo-text-xl leo-font-semibold">{{ trxnSummId }}</div>
+                <div v-show="isMulTrxn" v-for="(trxnSumm, index) in trxnSummIdList" v-bind:key="index">
+                    <div class="leo-text-xl leo-font-semibold">{{ trxnSumm.trxnSummId }}</div>
+                </div>
+            </div>
+            <div class="leo-text-center" v-else>
+                <div>{{$t('fo.cpfreq.ack.failed2')}}</div>
+                <br/>
+                <div>You can try again later, or contact our <span class="leo-text-sm leo-text-primary leo-underline"
+                    @click="isDialogOpen = true">customer service</span> for further assistance.
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="leo-pb-md leo-px-md" v-if="status === 'success' && hasOutstandingPremium">
+        <leo-text-note class="custom-text-note">
+            {{$t('fo.cpm.ack.outstanding')}}
+            <div class="leo-text-right leo-text-md leo-mt-md">
+                <span class="leo-mr-sm leo-text-primary leo-font-semibold leo-text-sm" @click="goToMakePayment">{{$t('fo.cpm.ack.make.payment')}}</span>
+                <leo-icon color="primary" type="button-link" size="md"></leo-icon>
+            </div>
+        </leo-text-note>
+    </div>
+    <leo-divider class="custom_divider_3" v-if="status === 'success'" />
+    <div v-if="eligiblePolicies.length > 1">
+        <div class="leo-p-md leo-pb-0" @click="goToPaymentMethod" v-if="status === 'success'">
+            <leo-arrow-button
+                class="leo-mb-md leo-text-xs"
+            >{{$t('fo.cpm.ack.map')}}</leo-arrow-button>
+        </div>    
+    </div>
+
+    <leo-dialog :show="isDialogOpen" containerClass="leo-p-3xl" persistence @dismissed="isDialogOpen = false">
+        <div @click="isDialogOpen = false" class="leo-text-right leo--mt-lg leo--mr-md">
+            <leo-icon class="leo-cursor-pointer" type="close" />
+        </div>
+        <div class="leo-text-lg leo-font-semibold leo-mb-md">Customer service</div>
+        <div>
+            <span @click="pressToCall" class="leo-font-semibold">
+                <leo-icon
+                    class="leo-cursor-pointer leo-mr-xs leo-font-normal"
+                    color="primary"
+                    type="call"
+                    height="16"
+                    width="16"
+                />Call
+            </span>
+            <leo-divider class="leo-h-sm leo-mx-md" vertical />
+            <span @click="pressToEmail" class="leo-font-semibold">
+                <leo-icon
+                    class="leo-cursor-pointer leo-mr-xs leo-font-semibold"
+                    color="primary"
+                    type="mail"
+                    height="16"
+                    width="16"
+                />Email
+            </span>
+        </div>
+    </leo-dialog>
+</div>
+

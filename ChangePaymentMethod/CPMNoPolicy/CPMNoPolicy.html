@@ -1,0 +1,67 @@
+<div>
+	<!-- <section v-if="isLoading">
+		<leo-skeleton-navigation-card class="leo-mb-md leo-max-w-full" />
+		<leo-skeleton-navigation-card class="leo-mb-md leo-max-w-full" />
+		<leo-skeleton-navigation-card class="leo-mb-md leo-max-w-full" />
+	</section> -->
+	<!-- <system-skeleton v-if="isLoading" class="leo-px-md" /> -->
+	<section>
+		<div class="leo-pb-md leo-text-center">
+			<leo-illustration
+			class="leo-mb-3xl leo-justify-center"
+			type="fund-switch-not-allowed"
+			width="300px"
+			height="200px"
+		  />
+		  <div class="leo-flex leo-flex-col leo-flex-grow leo-w-full leo-px-md leo-pt-md leo-pb-xs">
+			<div class="leo-text-xl leo-font-semibold">
+					You can't change payment method for your policies now.
+			</div>
+		  </div>
+		</div>
+			<leo-divider class="custom_divider_3" />
+			<div class="leo-p-md leo-pb-0">
+				<div class="leo-text-lg leo-font-semibold leo-mb-md">More services</div>
+				<leo-arrow-button
+					class="leo-mb-md"
+					@click="startChangePaymentFrequency"
+				>Change payment frequency</leo-arrow-button>
+				<leo-arrow-button
+					class="leo-mb-md"
+					@click="startMakePayment"
+				>Make payment</leo-arrow-button>
+				<leo-arrow-button
+					class="leo-mb-md"
+					@click="isDialogOpen = true"
+				>Contact customer service</leo-arrow-button>
+			</div>
+			<leo-dialog :show="isDialogOpen" containerClass="leo-p-3xl" persistence @dismissed="isDialogOpen = false">
+				<div @click="isDialogOpen = false" class="leo-text-right leo--mt-xs leo--mr-xs">
+					<leo-icon class="leo-cursor-pointer" type="close" />
+				</div>
+				<div class="leo-text-lg leo-font-semibold leo-mb-md">Customer service</div>
+				<div>
+					<span @click="pressToCall">
+						<leo-icon
+							class="leo-cursor-pointer leo-mr-xs"
+							color="primary"
+							type="call"
+							height="16"
+							width="16"
+						/>Call
+					</span>
+					<leo-divider class="leo-h-sm leo-mx-md" vertical />
+					<span @click="pressToEmail">
+						<leo-icon
+							class="leo-cursor-pointer leo-mr-xs"
+							color="primary"
+							type="mail"
+							height="16"
+							width="16"
+						/>Email
+					</span>
+				</div>
+			</leo-dialog>
+	</section>
+</div>
+
